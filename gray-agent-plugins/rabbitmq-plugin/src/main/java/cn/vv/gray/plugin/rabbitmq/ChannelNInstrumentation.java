@@ -21,12 +21,11 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
  * @since 1.0
  */
 public class ChannelNInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQProducerInterceptor";
+    public static final String INTERCEPTOR_CLASS = "cn.vv.gray.plugin.rabbitmq.RabbitMQProducerInterceptor";
     public static final String ENHANCE_CLASS_PRODUCER = "com.rabbitmq.client.impl.ChannelN";
     public static final String PUBLISH_ENHANCE_METHOD = "basicPublish";
-    public static final String INTERCEPTOR_CONSTRUCTOR = "org.apache.skywalking.apm.plugin.rabbitmq.ChannelNConstructorInterceptor";
     public static final String CONSUME_ENHANCE_METHOD = "basicConsume";
-    public static final String CONSUME_INTERCEPTOR_CONSTRUCTOR = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQConsumerInterceptor";
+    public static final String CONSUME_INTERCEPTOR_CONSTRUCTOR = "cn.vv.gray.plugin.rabbitmq.RabbitMQConsumerInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
