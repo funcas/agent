@@ -23,6 +23,12 @@
         <ttl.version>2.14.2</ttl.version>
         <shade.net.bytebuddy.source>net.bytebuddy</shade.net.bytebuddy.source>
         <shade.net.bytebuddy.target>shade.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
+        <spring.version>5.1.5.RELEASE</spring.version>
+        <webflux.version>5.3.7</webflux.version>
+        <servlet-api.version>4.0.1</servlet-api.version>
+        <scl.version>3.0.3</scl.version>
+        <ribbon.version>2.3.0</ribbon.version>
+        <rabbitmq-client.version>5.2.0</rabbitmq-client.version>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +50,63 @@
                 <version>${ttl.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-loadbalancer</artifactId>
+                <version>${scl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webflux</artifactId>
+                <version>${webflux.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.ribbon</groupId>
+                <artifactId>ribbon-loadbalancer</artifactId>
+                <version>${ribbon.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-api</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>2.2.2.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rabbitmq-client.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

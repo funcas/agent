@@ -37,4 +37,8 @@ public class Config {
          */
         public static LogLevel LEVEL = LogLevel.DEBUG;
     }
+
+    public static class AgentCfg {
+        public static String currentVersion = "";
+    }
 }

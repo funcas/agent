@@ -1,0 +1,2 @@
+spring-resttemplate=cn.vv.gray.plugin.resttemplate.sync.RestTemplateInstrumentation
+spring-resttemplate=cn.vv.gray.plugin.resttemplate.async.RestTemplateInstrumentation

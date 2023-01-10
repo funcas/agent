@@ -1,5 +1,6 @@
 package cn.vv.gray.agent;
 
+import cn.vv.gray.agent.core.config.SnifferConfigInitializer;
 import cn.vv.gray.agent.core.logging.api.ILog;
 import cn.vv.gray.agent.core.logging.api.LogManager;
 import cn.vv.gray.agent.core.plugin.AbstractClassEnhancePluginDefine;
@@ -30,7 +31,7 @@ public class VvGrayAgent {
         final PluginFinder pluginFinder;
 
         try {
-//            SnifferConfigInitializer.initialize();
+            SnifferConfigInitializer.initialize();
 
             pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins());
 
@@ -46,7 +47,7 @@ public class VvGrayAgent {
                 DynamicType.Builder<?> newBuilder = builder;
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
-                    DynamicType.Builder<?> possibleNewBuilder = define.define(typeDescription.getTypeName(), newBuilder, classLoader, context);
+                    DynamicType.Builder<?> possibleNewBuilder = define.define(typeDescription, newBuilder, classLoader, context);
                     if (possibleNewBuilder != null) {
                         newBuilder = possibleNewBuilder;
                     }

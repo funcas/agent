@@ -28,6 +28,12 @@
             <artifactId>disruptor</artifactId>
             <version>3.3.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

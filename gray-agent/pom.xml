@@ -109,9 +109,13 @@
                         <configuration>
                             <target>
                                 <mkdir dir="${project.basedir}/../vv-agent"/>
+                                <mkdir dir="${project.basedir}/../vv-agent/config"/>
+                                <mkdir dir="${project.basedir}/../vv-agent/logs"/>
+                                <copy todir="${project.basedir}/../vv-agent/config">
+                                    <fileset dir="${project.basedir}/../config" />
+                                </copy>
                                 <copy file="${project.build.directory}/vv-gray-agent.jar"
                                       tofile="${project.basedir}/../vv-agent/vv-gray-agent.jar" overwrite="true"/>
-                                <mkdir dir="${project.basedir}/../vv-agent/logs"/>
                             </target>
                         </configuration>
                     </execution>

@@ -1,6 +1,7 @@
 package cn.vv.gray.plugin.feign;
 
-import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import cn.vv.gray.agent.core.common.Constants;
+import cn.vv.gray.agent.core.context.AgentContextManager;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import feign.Request;
@@ -18,7 +19,7 @@ import java.util.*;
  */
 public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         System.out.println("===>  before <===");
         Request request = (Request)allArguments[0];
         Field headersField = Request.class.getDeclaredField("headers");
@@ -30,8 +31,8 @@ public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
         Map<String, Collection<String>> headers = new LinkedHashMap<String, Collection<String>>();
 
         List<String> contextCollection = new LinkedList<String>();
-        contextCollection.add("1.0.0");
-        headers.put("x-version", contextCollection);
+        contextCollection.add(AgentContextManager.getCurrentContext().getVersion());
+        headers.put(Constants.VERSION, contextCollection);
         headers.putAll(request.headers());
 
         headersField.set(request, Collections.unmodifiableMap(headers));
@@ -39,13 +40,13 @@ public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         System.out.println("===> after <===");
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
     }
 }

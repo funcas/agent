@@ -52,11 +52,11 @@ public class InstMethodsInterWithOverrideArgs {
         @Origin Method method,
         @Morph OverrideCallable zuper
     ) throws Throwable {
-        EnhancedInstance targetObject = (EnhancedInstance)obj;
+//        EnhancedInstance targetObject = (EnhancedInstance)obj;
 
         MethodInterceptResult result = new MethodInterceptResult();
         try {
-            interceptor.beforeMethod(targetObject, method, allArguments, method.getParameterTypes(),
+            interceptor.beforeMethod(obj, method, allArguments, method.getParameterTypes(),
                 result);
         } catch (Throwable t) {
             logger.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
@@ -71,7 +71,7 @@ public class InstMethodsInterWithOverrideArgs {
             }
         } catch (Throwable t) {
             try {
-                interceptor.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(),
+                interceptor.handleMethodException(obj, method, allArguments, method.getParameterTypes(),
                     t);
             } catch (Throwable t2) {
                 logger.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
@@ -79,7 +79,7 @@ public class InstMethodsInterWithOverrideArgs {
             throw t;
         } finally {
             try {
-                ret = interceptor.afterMethod(targetObject, method, allArguments, method.getParameterTypes(),
+                ret = interceptor.afterMethod(obj, method, allArguments, method.getParameterTypes(),
                     ret);
             } catch (Throwable t) {
                 logger.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());

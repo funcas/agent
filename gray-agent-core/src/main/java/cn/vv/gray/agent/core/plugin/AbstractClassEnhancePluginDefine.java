@@ -5,6 +5,7 @@ import cn.vv.gray.agent.core.logging.api.LogManager;
 import cn.vv.gray.agent.core.plugin.exception.PluginException;
 import cn.vv.gray.agent.core.plugin.match.ClassMatch;
 import cn.vv.gray.agent.core.util.StringUtil;
+import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 
 public abstract class AbstractClassEnhancePluginDefine {
@@ -14,16 +15,16 @@ public abstract class AbstractClassEnhancePluginDefine {
     /**
      * Main entrance of enhancing the class.
      *
-     * @param transformClassName target class.
+     * @param typeDescription target class.
      * @param builder byte-buddy's builder to manipulate target class's bytecode.
      * @param classLoader load the given transformClass
      * @return the new builder, or <code>null</code> if not be enhanced.
      * @throws PluginException, when set builder failure.
      */
-    public DynamicType.Builder<?> define(String transformClassName,
+    public DynamicType.Builder<?> define(TypeDescription typeDescription,
                                          DynamicType.Builder<?> builder, ClassLoader classLoader, EnhanceContext context) throws PluginException {
         String interceptorDefineClassName = this.getClass().getName();
-
+        String transformClassName = typeDescription.getTypeName();
         if (StringUtil.isEmpty(transformClassName)) {
             logger.warn("classname of being intercepted is not defined by {}.", interceptorDefineClassName);
             return null;
@@ -48,7 +49,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         /**
          * find origin class source code for interceptor
          */
-        DynamicType.Builder<?> newClassBuilder = this.enhance(transformClassName, builder, classLoader, context);
+        DynamicType.Builder<?> newClassBuilder = this.enhance(typeDescription, builder, classLoader, context);
 
         context.initializationStageCompleted();
         logger.debug("enhance class {} by {} completely.", transformClassName, interceptorDefineClassName);
@@ -56,7 +57,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         return newClassBuilder;
     }
 
-    protected abstract DynamicType.Builder<?> enhance(String enhanceOriginClassName,
+    protected abstract DynamicType.Builder<?> enhance(TypeDescription typeDescription,
                                                       DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader, EnhanceContext context) throws PluginException;
 
     /**
