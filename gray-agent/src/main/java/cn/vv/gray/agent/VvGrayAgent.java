@@ -8,6 +8,7 @@ import cn.vv.gray.agent.core.plugin.EnhanceContext;
 import cn.vv.gray.agent.core.plugin.PluginBootstrap;
 import cn.vv.gray.agent.core.plugin.PluginFinder;
 import cn.vv.gray.agent.core.plugin.exception.PluginException;
+import cn.vv.gray.agent.core.util.StringUtil;
 import com.alibaba.ttl.threadpool.agent.TtlAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
@@ -16,6 +17,7 @@ import net.bytebuddy.utility.JavaModule;
 
 import java.lang.instrument.Instrumentation;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * TODO
@@ -28,10 +30,11 @@ public class VvGrayAgent {
     private static final ILog logger = LogManager.getLogger(VvGrayAgent.class);
     public static void premain(String agentArgs, Instrumentation instrumentation) throws PluginException {
         TtlAgent.premain(agentArgs, instrumentation);
+
         final PluginFinder pluginFinder;
 
         try {
-            SnifferConfigInitializer.initialize();
+            SnifferConfigInitializer.initialize(agentArgs);
 
             pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins());
 

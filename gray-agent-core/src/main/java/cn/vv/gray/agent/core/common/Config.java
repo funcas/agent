@@ -38,7 +38,14 @@ public class Config {
         public static LogLevel LEVEL = LogLevel.DEBUG;
     }
 
-    public static class AgentCfg {
-        public static String currentVersion = "";
+    public static class Agent {
+        public static String CURRENT_VERSION = "";
+
+        public static String NODE_GROUP = "";
+
+        public static String SERVICE_NAME = "";
+
+        public static boolean GRAY_MODE_ENABLED = false;
+
     }
 }

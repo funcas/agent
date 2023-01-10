@@ -16,27 +16,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * The <code>SnifferConfigInitializer</code> initializes all configs in several way.
- *
- * @author wusheng
- * @see {@link #initialize()}, to learn more about how to initialzie.
- */
 public class SnifferConfigInitializer {
     private static final ILog logger = LogManager.getLogger(SnifferConfigInitializer.class);
     private static String CONFIG_FILE_NAME = "/config/agent.config";
-    private static String ENV_KEY_PREFIX = "gray.";
+    private static String ENV_KEY_PREFIX = "vv.";
 
-    /**
-     * Try to locate `agent.config`, which should be in the /config dictionary of agent package.
-     * <p>
-     * Also try to override the config by system.env and system.properties. All the keys in these two places should
-     * start with {@link #ENV_KEY_PREFIX}. e.g. in env `skywalking.agent.application_code=yourAppName` to override
-     * `agent.application_code` in config file.
-     * <p>
-     * At the end, `agent.application_code` and `collector.servers` must be not blank.
-     */
-    public static void initialize() throws ConfigNotFoundException, AgentPackageNotFoundException {
+
+    public static void initialize(String agentArgs) {
         InputStream configFileStream;
 
         try {
@@ -54,12 +40,12 @@ public class SnifferConfigInitializer {
             logger.error(e, "Failed to read the system env.");
         }
 
-//        if (StringUtil.isEmpty(Config.Agent.APPLICATION_CODE)) {
-//            throw new ExceptionInInitializerError("`agent.application_code` is missing.");
-//        }
-//        if (StringUtil.isEmpty(Config.Collector.SERVERS)) {
-//            throw new ExceptionInInitializerError("`collector.servers` is missing.");
-//        }
+        try {
+            overrideConfigByAgentArgs(agentArgs);
+        }catch (Exception e) {
+            logger.error(e, "Failed to parse agentArgs");
+        }
+
     }
 
     /**
@@ -92,6 +78,22 @@ public class SnifferConfigInitializer {
         }
 
         if (!properties.isEmpty()) {
+            ConfigInitializer.initialize(properties, Config.class);
+        }
+    }
+
+    private static void overrideConfigByAgentArgs(String agentArgs) throws IllegalAccessException {
+        Properties properties = new Properties();
+        if(!StringUtil.isEmpty(agentArgs)) {
+            String[] keyPair = agentArgs.split(",");
+            for(String item : keyPair) {
+                String[] split = item.split(":");
+                if (split.length == 2) {
+                    properties.put(split[0], split[1]);
+                }
+            }
+        }
+        if (!properties.isEmpty()){
             ConfigInitializer.initialize(properties, Config.class);
         }
     }

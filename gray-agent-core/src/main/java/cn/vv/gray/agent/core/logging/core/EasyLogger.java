@@ -37,9 +37,7 @@ public class EasyLogger implements ILog {
             if (parametersIndex >= parameters.length) {
                 break;
             }
-            /**
-             * @Fix the Illegal group reference issue
-             */
+
             tmpMessage = tmpMessage.replaceFirst("\\{\\}", Matcher.quoteReplacement(String.valueOf(parameters[parametersIndex++])));
             startSize = index + 2;
         }
@@ -101,7 +99,7 @@ public class EasyLogger implements ILog {
 
     @Override
     public boolean isDebugEnable() {
-        return LogLevel.DEBUG.compareTo(Config.Logging.LEVEL) >= 0;
+        return LogLevel.DEBUG.compareTo(Config.Logging.LEVEL) == 0;
     }
 
     @Override
