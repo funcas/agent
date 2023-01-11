@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-/**
- * Init a class's static fields by a {@link Properties},
- * including static fields and static inner classes.
- * <p>
- * Created by wusheng on 2017/1/9.
- */
 public class ConfigInitializer {
     private static final Logger logger = Logger.getLogger(ConfigInitializer.class.getName());
 

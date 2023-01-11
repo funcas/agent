@@ -2,6 +2,7 @@ package cn.vv.gray.plugin.rabbitmq;
 
 import cn.vv.gray.agent.core.common.Constants;
 import cn.vv.gray.agent.core.context.AgentContextManager;
+import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cn.vv.gray.agent.core.util.StringUtil;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class RabbitMQProducerInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
-    public void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AMQP.BasicProperties properties = (AMQP.BasicProperties) allArguments[4];
         AMQP.BasicProperties.Builder propertiesBuilder;
 
@@ -56,12 +57,12 @@ public class RabbitMQProducerInterceptor implements InstanceMethodsAroundInterce
     }
 
     @Override
-    public Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         return ret;
     }
 
     @Override
-    public void handleMethodException(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
     }
 }

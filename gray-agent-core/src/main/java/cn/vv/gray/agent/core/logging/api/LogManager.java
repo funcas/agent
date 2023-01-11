@@ -1,7 +1,6 @@
 package cn.vv.gray.agent.core.logging.api;
 
-
-import cn.vv.gray.agent.core.logging.core.EasyLogResolver;
+import cn.vv.gray.agent.core.logging.core.PatternLogResolver;
 
 /**
  * LogManager is the {@link LogResolver} implementation manager. By using {@link LogResolver}, {@link
@@ -12,13 +11,20 @@ import cn.vv.gray.agent.core.logging.core.EasyLogResolver;
  * override the first without any warning or exception. <p> Created by xin on 2016/11/10.
  */
 public class LogManager {
-    private static LogResolver RESOLVER = new EasyLogResolver();
+    private static LogResolver RESOLVER = new PatternLogResolver();
 
     public static void setLogResolver(LogResolver resolver) {
         LogManager.RESOLVER = resolver;
     }
 
     public static ILog getLogger(Class<?> clazz) {
+        if (RESOLVER == null) {
+            return NoopLogger.INSTANCE;
+        }
+        return LogManager.RESOLVER.getLogger(clazz);
+    }
+
+    public static ILog getLogger(String clazz) {
         if (RESOLVER == null) {
             return NoopLogger.INSTANCE;
         }

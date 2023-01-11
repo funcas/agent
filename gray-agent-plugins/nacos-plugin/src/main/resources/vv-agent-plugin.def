@@ -1,0 +1,2 @@
+nacos=cn.vv.gray.plugin.nacos.ClientWorkerInstrumentation
+nacos=cn.vv.gray.plugin.nacos.NacosRegistryInstrumentation

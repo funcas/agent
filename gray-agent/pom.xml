@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.1</version>
                 <configuration>
                     <shadedArtifactAttached>false</shadedArtifactAttached>
                     <createDependencyReducedPom>true</createDependencyReducedPom>
@@ -60,8 +60,8 @@
                             <shadedPattern>${shade.net.bytebuddy.target}</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>com.lmax</pattern>
-                            <shadedPattern>shade.com.lmax</shadedPattern>
+                            <pattern>com.google</pattern>
+                            <shadedPattern>shade.com.google</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

@@ -26,6 +26,8 @@ public class PluginFinder {
     private final Map<String, LinkedList<AbstractClassEnhancePluginDefine>> nameMatchDefine = new HashMap<String, LinkedList<AbstractClassEnhancePluginDefine>>();
     private final List<AbstractClassEnhancePluginDefine> signatureMatchDefine = new LinkedList<AbstractClassEnhancePluginDefine>();
 
+    private static boolean IS_PLUGIN_INIT_COMPLETED = false;
+
     public PluginFinder(List<AbstractClassEnhancePluginDefine> plugins) {
         for (AbstractClassEnhancePluginDefine plugin : plugins) {
             ClassMatch match = plugin.enhanceClass();
@@ -81,5 +83,13 @@ public class PluginFinder {
             }
         }
         return judge;
+    }
+
+    public static void pluginInitCompleted() {
+        IS_PLUGIN_INIT_COMPLETED = true;
+    }
+
+    public static boolean isPluginInitCompleted() {
+        return IS_PLUGIN_INIT_COMPLETED;
     }
 }

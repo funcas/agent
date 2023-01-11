@@ -1,10 +1,8 @@
 package cn.vv.gray.agent.core.logging.core;
 
 /**
- * The <code>LogMessageHolder</code> is a {@link String} holder,
- * in order to in-process propagation String across the disruptor queue.
- *
- * @author wusheng
+ * The <code>LogMessageHolder</code> is a {@link String} holder, in order to in-process propagation String across the
+ * disruptor queue.
  */
 public class LogMessageHolder {
     private String message;

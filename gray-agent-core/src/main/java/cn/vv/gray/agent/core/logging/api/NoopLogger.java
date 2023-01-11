@@ -7,9 +7,7 @@ package cn.vv.gray.agent.core.logging.api;
  * Created by xin on 2016/11/10.
  */
 public enum NoopLogger implements ILog {
-    INSTANCE {
-
-    };
+    INSTANCE;
 
     @Override
     public void info(String message) {
@@ -18,6 +16,11 @@ public enum NoopLogger implements ILog {
 
     @Override
     public void info(String format, Object... arguments) {
+
+    }
+
+    @Override
+    public void info(final Throwable t, final String format, final Object... arguments) {
 
     }
 
@@ -52,6 +55,11 @@ public enum NoopLogger implements ILog {
     }
 
     @Override
+    public boolean isTraceEnabled() {
+        return false;
+    }
+
+    @Override
     public void debug(String format) {
 
     }
@@ -62,12 +70,37 @@ public enum NoopLogger implements ILog {
     }
 
     @Override
+    public void debug(final Throwable t, final String format, final Object... arguments) {
+
+    }
+
+    @Override
     public void error(String format) {
 
     }
 
     @Override
+    public void trace(final String format) {
+
+    }
+
+    @Override
+    public void trace(final String format, final Object... arguments) {
+
+    }
+
+    @Override
+    public void trace(final Throwable t, final String format, final Object... arguments) {
+
+    }
+
+    @Override
     public void error(Throwable e, String format, Object... arguments) {
+
+    }
+
+    @Override
+    public void warn(Throwable e, String format, Object... arguments) {
 
     }
 }

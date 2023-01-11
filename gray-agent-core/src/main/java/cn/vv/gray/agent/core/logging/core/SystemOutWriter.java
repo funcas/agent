@@ -6,10 +6,7 @@ public enum SystemOutWriter implements IWriter {
     INSTANCE;
 
     /**
-     * Tricky codes for avoiding style-check.
-     * Because, in here, "system.out.println" is the only choice to output logs.
-     *
-     * @param message
+     * Tricky codes for avoiding style-check. Because, in here, "system.out.println" is the only choice to output logs.
      */
     @Override
     public void write(String message) {

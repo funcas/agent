@@ -1,11 +1,14 @@
 package cn.vv.gray.plugin.scl;
 
 import cn.vv.gray.agent.core.common.Constants;
+import cn.vv.gray.agent.core.common.GrayInfoContextHolder;
 import cn.vv.gray.agent.core.logging.api.ILog;
 import cn.vv.gray.agent.core.logging.api.LogManager;
+import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cn.vv.gray.agent.core.util.ReflectionUtils;
+import cn.vv.gray.agent.core.util.StringUtil;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.*;
@@ -13,7 +16,6 @@ import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSuppli
 import org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -30,8 +32,9 @@ import java.util.stream.Collectors;
 public class SpringCloudLoadBalanceInterceptor implements InstanceMethodsAroundInterceptor {
     private static final ILog logger = LogManager.getLogger(SpringCloudLoadBalanceInterceptor.class);
     final AtomicInteger position = new AtomicInteger(new Random().nextInt(1000));
+
     @Override
-    public void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Request request = (Request) allArguments[0];
         DefaultRequestContext requestContext = (DefaultRequestContext) request.getContext();
         RequestData clientRequest = (RequestData) requestContext.getClientRequest();
@@ -48,12 +51,12 @@ public class SpringCloudLoadBalanceInterceptor implements InstanceMethodsAroundI
     }
 
     @Override
-    public Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         return ret;
     }
 
     @Override
-    public void handleMethodException(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
     }
 
@@ -61,27 +64,47 @@ public class SpringCloudLoadBalanceInterceptor implements InstanceMethodsAroundI
         if (instances.isEmpty()) {
             return new EmptyResponse();
         } else {
-            String reqVersion = headers.getFirst(Constants.VERSION);
-            if (logger.isDebugEnable()) {
-                logger.debug("[GW] - header x-version := {}", reqVersion);
-            }
-            if (StringUtils.isEmpty(reqVersion)) {
-                return processRibbonInstanceResponse(instances);
-            }
-
-            List<ServiceInstance> serviceInstances = instances.stream()
-                    .filter(instance -> reqVersion.equals(instance.getMetadata().get(Constants.META_VERSION)))
-                    .collect(Collectors.toList());
-
-            if (serviceInstances.size() > 0) {
-                // 将筛选出来的服务实例负载均衡
-                if(logger.isDebugEnable()) {
-                    logger.debug("[GW] - got service instances: {}", serviceInstances.size());
+            ServiceInstance inst = instances.get(0);
+            String serviceId = inst.getServiceId();
+            if (GrayInfoContextHolder.getInstance().needReRouteServices(serviceId)) {
+//                String reqVersion = headers.getFirst(Constants.VERSION);
+//                if (logger.isDebugEnable()) {
+//                    logger.debug("[GW] - header x-version := {}", reqVersion);
+//                }
+//                if (StringUtils.isEmpty(reqVersion)) {
+//                    return processRibbonInstanceResponse(instances);
+//                }
+//
+//                List<ServiceInstance> serviceInstances = instances.stream()
+//                        .filter(instance -> reqVersion.equals(instance.getMetadata().get(Constants.META_VERSION)))
+//                        .collect(Collectors.toList());
+//
+//                if (serviceInstances.size() > 0) {
+//                    // 将筛选出来的服务实例负载均衡
+//                    if(logger.isDebugEnable()) {
+//                        logger.debug("[GW] - got service instances: {}", serviceInstances.size());
+//                    }
+//                    return processRibbonInstanceResponse(serviceInstances);
+//                }
+                if (StringUtil.isEmpty(GrayInfoContextHolder.getInstance().getTag())) {
+                    logger.warn("agent tag 没有被正确配置！");
+                    return processRibbonInstanceResponse(instances);
                 }
-                return processRibbonInstanceResponse(serviceInstances);
+                List<ServiceInstance> serviceInstances = instances.stream()
+                        .filter(instance -> GrayInfoContextHolder.getInstance().getTag()
+                                .equals(instance.getMetadata().get(Constants.META_TAG)))
+                        .collect(Collectors.toList());
+                if (serviceInstances.size() > 0) {
+//                    // 将筛选出来的服务实例负载均衡
+                    if (logger.isDebugEnable()) {
+                        logger.debug("[GW] - got service instances: {}", serviceInstances.size());
+                    }
+                    return processRibbonInstanceResponse(serviceInstances);
+                }
             }
 
-            // 如果一个都没找到，走默认负载均衡，这种情况一般是配置不对。
+
+            // 非灰度、灰度下非发布的服务，不处理
             return processRibbonInstanceResponse(instances);
 
         }

@@ -2,6 +2,7 @@ package cn.vv.gray.plugin.feign;
 
 import cn.vv.gray.agent.core.common.Constants;
 import cn.vv.gray.agent.core.context.AgentContextManager;
+import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import feign.Request;
@@ -19,8 +20,7 @@ import java.util.*;
  */
 public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
-    public void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        System.out.println("===>  before <===");
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Request request = (Request)allArguments[0];
         Field headersField = Request.class.getDeclaredField("headers");
         Field modifiersField = Field.class.getDeclaredField("modifiers");
@@ -40,13 +40,12 @@ public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
     }
 
     @Override
-    public Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        System.out.println("===> after <===");
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         return ret;
     }
 
     @Override
-    public void handleMethodException(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
     }
 }

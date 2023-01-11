@@ -7,8 +7,14 @@ package cn.vv.gray.agent.core.logging.api;
  */
 public interface LogResolver {
     /**
-     * @param clazz, the class is showed in log message.
+     * @param clazz the class is showed in log message.
      * @return {@link ILog} implementation.
      */
     ILog getLogger(Class<?> clazz);
+
+    /**
+     * @param clazz the class is showed in log message.
+     * @return {@link ILog} implementation.
+     */
+    ILog getLogger(String clazz);
 }

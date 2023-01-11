@@ -1,14 +1,15 @@
-package cn.vv.gray.plugin.spring.webflux;
+package cn.vv.gray.plugin.nacos;
 
 import cn.vv.gray.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import cn.vv.gray.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import cn.vv.gray.agent.core.plugin.match.ClassMatch;
+import cn.vv.gray.agent.core.plugin.match.NameMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-import static cn.vv.gray.agent.core.plugin.match.NameMatch.byName;
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 /**
  * TODO
@@ -16,16 +17,14 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * @author Shane Fang
  * @since 1.0
  */
-public class HandlerAdapterInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class ClientWorkerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "org.springframework.web.server.adapter.HttpWebHandlerAdapter";
+    public static final String ENHANCE_CLASS = "com.alibaba.nacos.client.config.impl.ClientWorker";
+    public static final String INTERCEPT_CLASS = "cn.vv.gray.plugin.nacos.ClientWorkerInterceptor";
 
-    private static final String INTERCEPT_CLASS = "cn.vv.gray.plugin.spring.webflux.HandlerAdapterInterceptor";
-
-    public static final String INTERCEPT_METHOD = "handle";
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class HandlerAdapterInstrumentation extends ClassInstanceMethodsEnhancePl
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_METHOD);
+                        return named("getServerConfig").and(takesArguments(4));
                     }
 
                     @Override

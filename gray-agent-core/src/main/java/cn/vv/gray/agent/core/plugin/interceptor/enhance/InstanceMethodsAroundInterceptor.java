@@ -16,7 +16,7 @@ public interface InstanceMethodsAroundInterceptor {
      * @param result change this result, if you want to truncate the method.
      * @throws Throwable
      */
-    void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
+    void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable;
 
     /**
@@ -27,7 +27,7 @@ public interface InstanceMethodsAroundInterceptor {
      * @return the method's actual return value.
      * @throws Throwable
      */
-    Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
+    Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable;
 
     /**
@@ -36,7 +36,7 @@ public interface InstanceMethodsAroundInterceptor {
      * @param method
      * @param t the exception occur.
      */
-    void handleMethodException(Object objInst, Method method, Object[] allArguments,
+    void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes,
         Throwable t);
 }

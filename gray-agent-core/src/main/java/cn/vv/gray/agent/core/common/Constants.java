@@ -1,8 +1,5 @@
 package cn.vv.gray.agent.core.common;
 
-import cn.vv.gray.agent.core.logging.core.LogLevel;
-import cn.vv.gray.agent.core.logging.core.WriterFactory;
-
 /**
  * TODO
  *
@@ -16,7 +13,7 @@ public class Constants {
 
     public static final String VERSION = "x-version";
 
-    public static final String META_VERSION = "version";
+    public static final String META_TAG = "tag";
 
     public static final String CTX_VERSION_KEY = "ver";
 

@@ -8,16 +8,18 @@ import cn.vv.gray.agent.core.plugin.EnhanceContext;
 import cn.vv.gray.agent.core.plugin.PluginBootstrap;
 import cn.vv.gray.agent.core.plugin.PluginFinder;
 import cn.vv.gray.agent.core.plugin.exception.PluginException;
-import cn.vv.gray.agent.core.util.StringUtil;
 import com.alibaba.ttl.threadpool.agent.TtlAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 
 import java.lang.instrument.Instrumentation;
 import java.util.List;
-import java.util.Properties;
+
+import static net.bytebuddy.matcher.ElementMatchers.nameContains;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
 /**
  * TODO
@@ -34,7 +36,7 @@ public class VvGrayAgent {
         final PluginFinder pluginFinder;
 
         try {
-            SnifferConfigInitializer.initialize(agentArgs);
+            SnifferConfigInitializer.initializeCoreConfig(agentArgs);
 
             pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins());
 
@@ -43,8 +45,17 @@ public class VvGrayAgent {
             return;
         }
 
+        AgentBuilder agentBuilder = new AgentBuilder.Default().ignore(
+                nameStartsWith("net.bytebuddy.")
+                        .or(nameStartsWith("org.slf4j."))
+                        .or(nameStartsWith("org.groovy."))
+                        .or(nameContains("javassist"))
+                        .or(nameContains(".asm."))
+                        .or(nameContains(".reflectasm."))
+                        .or(nameStartsWith("sun.reflect"))
+                        .or(ElementMatchers.isSynthetic()));
 
-        new AgentBuilder.Default().type(pluginFinder.buildMatch()).transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+        agentBuilder.type(pluginFinder.buildMatch()).transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription, classLoader);
             if (pluginDefines.size() > 0) {
                 DynamicType.Builder<?> newBuilder = builder;
@@ -86,8 +97,9 @@ public class VvGrayAgent {
 
             }
 
-            @Override public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded,
-                                          Throwable throwable) {
+            @Override
+            public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded,
+                                Throwable throwable) {
                 logger.error("Enhance class " + typeName + " error.", throwable);
             }
 
@@ -95,5 +107,7 @@ public class VvGrayAgent {
             public void onComplete(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
             }
         }).installOn(instrumentation);
+
+        PluginFinder.pluginInitCompleted();
     }
 }

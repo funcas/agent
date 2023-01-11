@@ -1,11 +1,14 @@
 package cn.vv.gray.plugin.ribbon;
 
+import cn.vv.gray.agent.core.common.Config;
 import cn.vv.gray.agent.core.common.Constants;
-import cn.vv.gray.agent.core.context.AgentContextManager;
+import cn.vv.gray.agent.core.common.GrayInfoContextHolder;
 import cn.vv.gray.agent.core.logging.api.ILog;
 import cn.vv.gray.agent.core.logging.api.LogManager;
+import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import cn.vv.gray.agent.core.util.StringUtil;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.netflix.loadbalancer.Server;
 
@@ -21,43 +24,66 @@ public class AbstractServerPredicateInterceptor implements InstanceMethodsAround
 
 
     @Override
-    public void beforeMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
 //        PredicateBasedRule inst = (PredicateBasedRule) objInst;
         List<Server> servers = (List<Server>) allArguments[0];
-        String version = AgentContextManager.getCurrentContext().getVersion();
-        if(logger.isDebugEnable()) {
-            logger.debug("[RIBBON] - got header version {}", version);
-        }
-        if(version == null || "".equals(version)) {
+//        String version = AgentContextManager.getCurrentContext().getVersion();
+//        if(logger.isDebugEnable()) {
+//            logger.debug("[RIBBON] - got header version {}", version);
+//        }
+//        if(version == null || "".equals(version)) {
+//            return;
+//        }
+//        List<Server> newServers = servers.stream().filter(s -> {
+//            NacosServer server = (NacosServer) s;
+//
+//            return server.getMetadata().containsKey(Constants.META_VERSION)
+//                    && server.getMetadata().get(Constants.META_VERSION).equals(version);
+//        }).collect(Collectors.toList());
+//        if (newServers.size() == 0) {
+//            return;
+//        }
+//
+//        if(logger.isDebugEnable()) {
+//            logger.debug("[RIBBON] - got service instances {}", newServers.size());
+//        }
+        if (StringUtil.isEmpty(Config.Agent.TAG) || servers.size() == 0) {
             return;
         }
-        List<Server> newServers = servers.stream().filter(s -> {
-            NacosServer server = (NacosServer) s;
+        String serviceName = getServiceName((NacosServer) servers.get(0));
+        if (GrayInfoContextHolder.getInstance()
+                .needReRouteServices(serviceName)) {
+            List<Server> newServers = servers.stream().filter(s -> {
+                NacosServer server = (NacosServer) s;
 
-            return server.getMetadata().containsKey(Constants.META_VERSION)
-                    && server.getMetadata().get(Constants.META_VERSION).equals(version);
-        }).collect(Collectors.toList());
-        if (newServers.size() == 0) {
-            return;
+                return server.getMetadata().containsKey(Constants.META_TAG)
+                        && server.getMetadata().get(Constants.META_TAG)
+                        .equals(GrayInfoContextHolder.getInstance().getTag());
+            }).collect(Collectors.toList());
+            allArguments[0] = newServers;
         }
-
-        if(logger.isDebugEnable()) {
-            logger.debug("[RIBBON] - got service instances {}", newServers.size());
-        }
-        allArguments[0] = newServers;
     }
 
     @Override
-    public Object afterMethod(Object objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         return ret;
     }
 
     @Override
-    public void handleMethodException(Object objInst, Method method, Object[] allArguments,
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
 
+    }
+
+    private String getServiceName(NacosServer nacosServer) {
+        String[] serviceNameArray = nacosServer.getInstance().getServiceName().split("@@");
+        if (serviceNameArray.length != 2) {
+            return "";
+        }
+
+        return serviceNameArray[1];
     }
 
 

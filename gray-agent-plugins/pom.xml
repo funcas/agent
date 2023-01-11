@@ -19,6 +19,8 @@
         <module>loadbalance-plugin</module>
         <module>resttemplate-plugin</module>
         <module>rabbitmq-plugin</module>
+        <module>nacos-plugin</module>
+        <module>spring-webflux-plugin</module>
     </modules>
 
     <properties>
@@ -40,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

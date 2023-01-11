@@ -2,9 +2,6 @@ package cn.vv.gray.agent.core.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * TODO
  *
