@@ -16,11 +16,11 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * @author Shane Fang
  * @since 1.0
  */
-public class DefaultClientRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     public static final String ENHANCE_CLASS = "org.springframework.web.reactive.DispatcherHandler";
 
-    private static final String INTERCEPT_CLASS = "cn.vv.gray.plugin.spring.webflux.DefaultClientRequestInterceptor";
+    private static final String INTERCEPT_CLASS = "cn.vv.gray.plugin.spring.webflux.DispatcherHandlerInterceptor";
 
     public static final String INTERCEPT_METHOD = "handle";
 

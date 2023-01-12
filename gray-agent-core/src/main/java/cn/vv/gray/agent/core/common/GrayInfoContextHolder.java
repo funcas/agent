@@ -14,6 +14,8 @@ public class GrayInfoContextHolder {
     private ModeEnum mode;
     private String tag;
 
+    private String version;
+
     private Set<String> services = new HashSet<>();
 
     private static class Holder {
@@ -26,6 +28,10 @@ public class GrayInfoContextHolder {
 
     public boolean needReRouteServices(String serviceId) {
         return ModeEnum.Prod != this.mode && this.services.contains(serviceId);
+    }
+
+    public boolean needNackMqMessages() {
+        return ModeEnum.Prod != this.mode && this.services.contains(Config.Agent.SERVICE_NAME);
     }
 
     public String getTag() {
@@ -50,5 +56,13 @@ public class GrayInfoContextHolder {
 
     public void setServices(Set<String> services) {
         this.services = services;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

@@ -1,7 +1,7 @@
 package cn.vv.gray.plugin.rabbitmq;
 
 import cn.vv.gray.agent.core.common.Constants;
-import cn.vv.gray.agent.core.context.AgentContextManager;
+import cn.vv.gray.agent.core.common.GrayInfoContextHolder;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -48,8 +48,12 @@ public class RabbitMQProducerInterceptor implements InstanceMethodsAroundInterce
         } else {
             propertiesBuilder = new AMQP.BasicProperties.Builder();
         }
-        String version = AgentContextManager.getCurrentContext().getVersion();
-        if(!StringUtil.isEmpty(version)){
+        String tag = GrayInfoContextHolder.getInstance().getTag();
+        String version = GrayInfoContextHolder.getInstance().getVersion();
+        if(!StringUtil.isEmpty(tag)){
+            headers.put(Constants.TAG, tag);
+        }
+        if(!StringUtil.isEmpty(version)) {
             headers.put(Constants.VERSION, version);
         }
 

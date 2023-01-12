@@ -16,6 +16,8 @@ public class Gray {
 
     private Set<String> services;
 
+    private String version;
+
     public ModeEnum getMode() {
         return mode;
     }
@@ -40,12 +42,21 @@ public class Gray {
         this.services = services;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "Gray{" +
                 "mode=" + mode +
                 ", tag='" + tag + '\'' +
                 ", services=" + services +
+                ", version='" + version + '\'' +
                 '}';
     }
 }

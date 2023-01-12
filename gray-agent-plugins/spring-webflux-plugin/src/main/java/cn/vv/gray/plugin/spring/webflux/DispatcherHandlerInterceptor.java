@@ -19,16 +19,16 @@ import java.lang.reflect.Method;
  * @author Shane Fang
  * @since 1.0
  */
-public class DefaultClientRequestInterceptor implements InstanceMethodsAroundInterceptor {
-    private static final ILog logger = LogManager.getLogger(DefaultClientRequestInterceptor.class);
+public class DispatcherHandlerInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final ILog logger = LogManager.getLogger(DispatcherHandlerInterceptor.class);
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         ServerWebExchange serverWebExchange = (ServerWebExchange) allArguments[0];
-        String active = GrayInfoContextHolder.getInstance().getTag();
-        if (!StringUtil.isEmpty(active)) {
-            logger.info("setting header version {}", active);
-            ServerHttpRequest request = serverWebExchange.getRequest().mutate().header(Constants.VERSION, active).build();
+        String version = GrayInfoContextHolder.getInstance().getVersion();
+        if (!StringUtil.isEmpty(version)) {
+            logger.info("setting header version {}", version);
+            ServerHttpRequest request = serverWebExchange.getRequest().mutate().header(Constants.VERSION, version).build();
             ServerWebExchange newServerWebExchange = serverWebExchange.mutate().request(request).build();
             allArguments[0] = newServerWebExchange;
         }

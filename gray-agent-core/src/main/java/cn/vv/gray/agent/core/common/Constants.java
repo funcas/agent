@@ -11,7 +11,12 @@ public class Constants {
 
     public static String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
 
+    /**
+     *
+     */
     public static final String VERSION = "x-version";
+
+    public static final String TAG = "tag";
 
     public static final String META_TAG = "tag";
 

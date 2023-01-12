@@ -1,1 +1,1 @@
-webflux=cn.vv.gray.plugin.spring.webflux.DefaultClientRequestInstrumentation
+webflux=cn.vv.gray.plugin.spring.webflux.DispatcherHandlerInstrumentation

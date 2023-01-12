@@ -52,6 +52,7 @@ public class ClientWorkerInterceptor implements InstanceMethodsAroundInterceptor
                 GrayInfoContextHolder.getInstance().setTag(grayConfig.getGray().getTag());
                 GrayInfoContextHolder.getInstance().setMode(grayConfig.getGray().getMode());
                 GrayInfoContextHolder.getInstance().setServices(grayConfig.getGray().getServices());
+                GrayInfoContextHolder.getInstance().setVersion(grayConfig.getGray().getVersion());
             }
 
         }

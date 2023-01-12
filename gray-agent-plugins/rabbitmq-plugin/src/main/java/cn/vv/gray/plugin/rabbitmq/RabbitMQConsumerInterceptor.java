@@ -4,6 +4,7 @@ import cn.vv.gray.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import cn.vv.gray.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.impl.ChannelN;
 
 import java.lang.reflect.Method;
 
@@ -18,7 +19,8 @@ public class RabbitMQConsumerInterceptor implements InstanceMethodsAroundInterce
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
         Consumer consumer = (Consumer) allArguments[6];
-        allArguments[6] = new ConsumerProxy(consumer);
+        ChannelN channel = (ChannelN) objInst;
+        allArguments[6] = new ConsumerProxy(consumer, channel);
     }
 
     @Override
